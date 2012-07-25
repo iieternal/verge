@@ -2,11 +2,11 @@
 include 'lib/bones.php';
 
 get('/', function($app) {
-	echo "Home";
-	var_dump($app);
+	$app->set('message', 'Welcome Back!');
+	$app->render('home');
 });
 
 
 get('/signup', function($app) {
-	echo "Signup!";
+	$app->render('signup');
 });

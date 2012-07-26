@@ -1,10 +1,17 @@
 <?php 
 include 'lib/bones.php';
 
+get('/say/:message', function($app) {
+	$app->set('message', $app->request('message'));
+	$app->render('home');
+});
+
 get('/', function($app) {
 	$app->set('message', 'Welcome Back!');
 	$app->render('home');
 });
+
+
 
 
 get('/signup', function($app) {

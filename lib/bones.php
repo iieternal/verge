@@ -1,5 +1,7 @@
 <?php
 
+$debug = array();
+
 ini_set('display_errors', 'On');
 // error_reporting(E_ERROR | E_PARSE);
 error_reporting(E_ALL);
@@ -94,6 +96,8 @@ class Bones {
 	}
 
 	public static function register($route, $callback, $method) {
+		$debug['route_found'] = static::$route_found;
+		$debug['method'] = $method;
 		if (!static::$route_found) {
 			$bones = static::get_instance();
 			$url_parts = explode('/', trim($route, '/'));
@@ -121,12 +125,17 @@ class Bones {
 				// Routes are different lengths
 				$matched = false;
 			}
+			$debug['$matched'] = $matched;
+			$debug['$bones->method'] = $bones->method;
+			$debug['$method'] = $method;
 
-			if(!$matched && $bones->method != $method) {
+			if(!$matched || $bones->method != $method) {
+				$debug['return false'] = true;
 				return false;
 			} else {
 				static::$route_found = true;
 				echo $callback($bones);
+				// echo var_dump($debug);
 			}
 		}
 	}

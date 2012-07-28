@@ -7,6 +7,8 @@ error_reporting(E_ERROR | E_PARSE);
 // error_reporting(E_ALL);
 
 define('ROOT', __DIR__ . '/..');
+
+require_once ROOT . '/lib/bootstrap.php';
 require_once ROOT . '/lib/sag/src/Sag.php';
 
 function __autoload($classname) {
@@ -91,8 +93,18 @@ class Bones {
 		return $_POST[$key];
 	}
 
+	public function display_alert($var = 'error') {
+		if (isset($this->vars[$var])) {
+			return "<div class='alert alert-" . $var . "'><a class='close' data-dismiss='alert'>x</a>" . $this->vars[$var] . "</div>";
+		}
+	}
+
 	public function request($key) {
 		return $this->route_variables[$key];
+	}
+
+	public function redirect($path = '/') {
+		header('Location: ' . $this->make_route($path));
 	}
 
 	public function make_route($path = '') {

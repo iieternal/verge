@@ -46,6 +46,18 @@ get('/user/:username', function($app) {
 	$app->render('user/profile');
 });
 
+post('/post', function($app) {
+	if(User::is_authenticated()) {
+		$post = new Post();
+		$post->content = $app->form('content');
+		$post->create();
+		$app->redirect('/user/' . User::current_user());
+	} else {
+		$app->set('error', 'You must be logged in to do that.');
+		$app->render('user/login');
+	}
+});
+
 get('/', function($app) {
 	$app->set('message', 'Welcome Back!');
 	$app->render('home');

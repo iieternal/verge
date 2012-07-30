@@ -42,6 +42,7 @@ get('/logout', function($app) {
 
 get('/user/:username', function($app) {
 	$app->set('user', User::get_by_username($app->request('username')));
+	$app->set('is_current_user', ($app->request('username')== User::current_user() ? true: false));
 	$app->render('user/profile');
 });
 
@@ -50,6 +51,4 @@ get('/', function($app) {
 	$app->render('home');
 });
 
-
-
-
+resolve();

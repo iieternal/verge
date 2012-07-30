@@ -31,6 +31,10 @@ function delete($route, $callback) {
 	Bones::register($route, $callback, 'DELETE');
 }
 
+function resolve() {
+	Bones::resolve();
+}
+
 class Bones {
 	private static $instance;
 	public static $route_found = false;
@@ -105,6 +109,24 @@ class Bones {
 
 	public function redirect($path = '/') {
 		header('Location: ' . $this->make_route($path));
+	}
+
+	public function error500($e) {
+		$this->set('exception', $e);
+		$this->render('error/500');
+		exit;
+	}
+
+	public function error404() {
+		$this->render('error/404');
+		exit;
+	}
+
+	public static function resolve() {
+		if(!static::$route_found) {
+			$bones = static::get_instance();
+			$bones->error404();
+		}
 	}
 
 	public function make_route($path = '') {

@@ -31,6 +31,8 @@ class User extends Base {
 				$bones->set('error', 'A user with this name already exists.');
 				$bones->render('user/signup');
 				exit;
+			} else {
+				$bones->error500($e);
 			}
 		}
 	}
@@ -49,6 +51,8 @@ class User extends Base {
 				$bones->set('error', 'Incorrect login.');
 				$bones->render('user/login');
 				exit;
+			} else {
+				$bones->error500($e);
 			}
 		}
 	}
@@ -80,12 +84,20 @@ class User extends Base {
 		$bones->couch->login(ADMIN_USER, ADMIN_PASSWORD);
 
 		$user = new User();
-		$doc = $bones->couch->get('org.couchdb.user:' . $username)->body;
-		$user->_id = $doc->_id;
-		$user->name = $doc->name;
-		$user->email = $doc->email;
-		$user->full_name = $doc->full_name;
+		try {
+			$doc = $bones->couch->get('org.couchdb.user:' . $username)->body;
+			$user->_id = $doc->_id;
+			$user->name = $doc->name;
+			$user->email = $doc->email;
+			$user->full_name = $doc->full_name;
 
-		return $user;
+			return $user;
+		} catch (SagCouchException $e) {
+			if($e->getCode() == "404") {
+				$bones->error404();
+			} else {
+				$bones->error500($e);
+			}
+		}
 	}
 }
